@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+
+namespace CompanyTransactionManager
+{
+    public class Transaction
+    {
+        public int Value { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
+    }
+
+    public class Company
+    {
+        public string Name { get; set; }
+        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
+    }
+
+    class Program
+    {
+        static Transaction CreateTransaction()
+        {
+            Console.Write("Enter transaction value (integer): ");
+            while (!int.TryParse(Console.ReadLine(), out int value))
+                Console.Write("Invalid input! Enter an integer: ");
+
+            Console.Write("Enter transaction date (YYYY-MM-DD): ");
+            string date = Console.ReadLine();
+
+            Console.Write("Enter transaction time (HH:MM:SS): ");
+            string time = Console.ReadLine();
+
+            return new Transaction { Value = value, Date = date, Time = time };
+        }
+
+        static void DisplayTransactions(List<Transaction> transactions)
+        {
+            for (int i = 0; i < transactions.Count; i++)
+                Console.WriteLine($"Transaction {i + 1}: Value: {transactions[i].Value}, Date: {transactions[i].Date}, Time: {transactions[i].Time}");
+        }
+
+        static void DeleteCompany(List<Company> companies)
+        {
+            if (companies.Count == 0)
+            {
+                Console.WriteLine("No companies available.");
+                return;
+            }
+
+            Console.WriteLine("Available companies:");
+            for (int i = 0; i < companies.Count; i++)
+                Console.WriteLine($"{i + 1}. {companies[i].Name}");
+
+            Console.Write("Select a company (by number): ");
+            if (int.TryParse(Console.ReadLine(), out int companyIndex) && companyIndex >= 1 && companyIndex <= companies.Count)
+            {
+                var company = companies[companyIndex - 1];
+
+                Console.WriteLine("1. Delete entire company\n2. Delete a transaction");
+                Console.Write("Enter your choice: ");
+                if (int.TryParse(Console.ReadLine(), out int choice) && choice == 1)
+                {
+                    companies.RemoveAt(companyIndex - 1);
+                    Console.WriteLine("Company deleted.");
+                }
+                else if (choice == 2 && company.Transactions.Count > 0)
+                {
+                    DisplayTransactions(company.Transactions);
+                    Console.Write("Select a transaction (by number): ");
+                    if (int.TryParse(Console.ReadLine(), out int transactionIndex) && transactionIndex >= 1 && transactionIndex <= company.Transactions.Count)
+                    {
+                        company.Transactions.RemoveAt(transactionIndex - 1);
+                        Console.WriteLine("Transaction deleted.");
+                    }
+                    else Console.WriteLine("Invalid transaction selection.");
+                }
+                else Console.WriteLine("No transactions to delete or invalid input.");
+            }
+            else Console.WriteLine("Invalid company selection.");
+        }
+
+        static void Menu(List<Company> companies)
+        {
+            while (true)
+            {
+                Console.WriteLine("\nMenu:\n1. Add Company\n2. Add Transactions\n3. Display All\n4. Delete\n5. Exit");
+                Console.Write("Enter choice: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 1 || choice > 5)
+                {
+                    Console.WriteLine("Invalid input.");
+                    continue;
+                }
+
+                if (choice == 5) break;
+
+                switch (choice)
+                {
+                    case 1:
+                        Console.Write("Enter company name: ");
+                        companies.Add(new Company { Name = Console.ReadLine() });
+                        break;
+
+                    case 2:
+                        if (companies.Count == 0)
+                        {
+                            Console.WriteLine("No companies available. Add a company first.");
+                            break;
+                        }
+
+                        Console.WriteLine("Available companies:");
+                        for (int i = 0; i < companies.Count; i++)
+                            Console.WriteLine($"{i + 1}. {companies[i].Name}");
+
+                        Console.Write("Select a company (by number): ");
+                        if (int.TryParse(Console.ReadLine(), out int companyIndex) && companyIndex >= 1 && companyIndex <= companies.Count)
+                        {
+                            Console.Write("Number of transactions to add: ");
+                            if (int.TryParse(Console.ReadLine(), out int numTransactions) && numTransactions > 0)
+                            {
+                                for (int i = 0; i < numTransactions; i++)
+                                    companies[companyIndex - 1].Transactions.Add(CreateTransaction());
+                            }
+                            else Console.WriteLine("Invalid number.");
+                        }
+                        else Console.WriteLine("Invalid company selection.");
+                        break;
+
+                    case 3:
+                        if (companies.Count == 0)
+                            Console.WriteLine("No companies available.");
+                        else
+                        {
+                            foreach (var company in companies)
+                            {
+                                Console.WriteLine($"\nCompany: {company.Name}");
+                                DisplayTransactions(company.Transactions);
+                            }
+                        }
+                        break;
+
+                    case 4:
+                        DeleteCompany(companies);
+                        break;
+                }
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            Menu(new List<Company>());
+        }
+    }
+}
