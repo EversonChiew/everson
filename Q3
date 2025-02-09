@@ -1,0 +1,223 @@
+// Transaction.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Quiz3_22011462
+{
+    public class Transaction
+    {
+        public int Id { get; set; }
+        public double Value { get; set; }
+        public DateTime Timestamp { get; set; }
+
+        public Transaction(int id, double value)
+        {
+            Id = id;
+            Value = value;
+            Timestamp = DateTime.Now;
+        }
+    }
+}
+
+// Company.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Quiz3_22011462
+{
+    public class Company
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<Transaction> Transactions { get; set; }
+
+        public Company(int id, string name)
+        {
+            Id = id;
+            Name = name;
+            Transactions = new List<Transaction>();
+        }
+
+        public void AddTransaction(double value)
+        {
+            Transactions.Add(new Transaction(Transactions.Count + 1, value));
+        }
+    }
+
+}
+
+// CompanyManager.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Quiz3_22011462
+{
+    public class CompanyManager
+    {
+        private List<Company> companies = new List<Company>();
+        private int idCounter = 1;
+
+        public void AddCompany(string name)
+        {
+            companies.Add(new Company(idCounter++, name));
+            Console.WriteLine("Company added successfully.");
+        }
+
+        public void AddTransactionToCompany(int companyId, double value)
+        {
+            var company = companies.Find(c => c.Id == companyId);
+            if (company != null)
+            {
+                company.AddTransaction(value);
+                Console.WriteLine("Transaction added to company successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Company not found.");
+            }
+        }
+
+        public void DisplayCompaniesAndTransactions()
+        {
+            foreach (var company in companies)
+            {
+                Console.WriteLine($"{company.Id}. {company.Name}");
+                foreach (var transaction in company.Transactions)
+                {
+                    Console.WriteLine($"   Transaction ID: {transaction.Id}, Value: {transaction.Value}, Timestamp: {transaction.Timestamp}");
+                }
+            }
+        }
+
+        public void DeleteCompany(int id)
+        {
+            var company = companies.Find(c => c.Id == id);
+            if (company != null)
+            {
+                companies.Remove(company);
+                Console.WriteLine("Company and its transactions deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Company not found.");
+            }
+        }
+
+        public void DeleteTransaction(int companyId, int transactionId)
+        {
+            var company = companies.Find(c => c.Id == companyId);
+            if (company != null)
+            {
+                company.Transactions.RemoveAll(t => t.Id == transactionId);
+                Console.WriteLine("Transaction deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Company not found.");
+            }
+        }
+    }
+}
+
+
+// Menu.cs
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Quiz3_22011462
+{
+    public class Menu
+    {
+        private CompanyManager companyManager = new CompanyManager();
+
+        public void ShowMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("1. Add Company");
+                Console.WriteLine("2. Add Transaction to Company");
+                Console.WriteLine("3. Display Companies and Transactions");
+                Console.WriteLine("4. Delete Transaction or Company");
+                Console.WriteLine("5. Exit");
+                Console.Write("Choose an option: ");
+
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        Console.Write("Enter company name: ");
+                        string companyName = Console.ReadLine();
+                        companyManager.AddCompany(companyName);
+                        break;
+                    case "2":
+                        Console.Write("Enter company ID to add transaction: ");
+                        int companyId = Convert.ToInt32(Console.ReadLine());
+                        Console.Write("Enter transaction value: ");
+                        double value = Convert.ToDouble(Console.ReadLine());
+                        companyManager.AddTransactionToCompany(companyId, value);
+                        break;
+                    case "3":
+                        companyManager.DisplayCompaniesAndTransactions();
+                        break;
+                    case "4":
+                        Console.WriteLine("1. Delete Transaction");
+                        Console.WriteLine("2. Delete Company");
+                        Console.Write("Choose an option: ");
+                        string deleteChoice = Console.ReadLine();
+                        if (deleteChoice == "1")
+                        {
+                            Console.Write("Enter company ID: ");
+                            int cId = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Enter transaction ID to delete: ");
+                            int tId = Convert.ToInt32(Console.ReadLine());
+                            companyManager.DeleteTransaction(cId, tId);
+                        }
+                        else if (deleteChoice == "2")
+                        {
+                            Console.WriteLine("Select a company to delete:");
+                            companyManager.DisplayCompaniesAndTransactions();
+                            Console.Write("Enter company ID: ");
+                            int cId = Convert.ToInt32(Console.ReadLine());
+                            companyManager.DeleteCompany(cId);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid option.");
+                        }
+                        break;
+                    case "5":
+                        return;
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
+                }
+            }
+        }
+    }
+}
+
+// Program.cs
+namespace Quiz3_22011462
+{
+    class Program
+    {
+        static void Main()
+        {
+            Menu menu = new Menu();
+            menu.ShowMenu();
+        }
+    }
+}
+
