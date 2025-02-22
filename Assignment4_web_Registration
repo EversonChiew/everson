@@ -1,0 +1,66 @@
+<html>
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2><strong>Registration</strong></h2>
+
+        <h3>Personal Details</h3>
+        <form action="contact.html">
+            <table>
+                <tr>
+                    <td><label>Full Name</label></td>
+                    <td><input type="text" placeholder="Enter your name" required></td>
+                    <td><label>Date of Birth</label></td>
+                    <td><input type="date" required></td>
+                </tr>
+                <tr>
+                    <td><label>Email</label></td>
+                    <td><input type="email" placeholder="Enter your email" required></td>
+                    <td><label>Mobile Number</label></td>
+                    <td><input type="tel" placeholder="Enter mobile number" required></td>
+                </tr>
+            <tr>
+    <td><label for="gender">Gender</label></td>
+    <td>
+        <div style="border: 1px solid #ccc; padding: 8px; border-radius: 5px; width: 200px; display: flex; align-items: center;">
+            <input type="radio" name="gender" id="male" value="Male" checked>
+            <label for="male" style="margin-right: 15px; margin-left: 5px;">Male</label>
+            <input type="radio" name="gender" id="female" value="Female">
+            <label for="female" style="margin-left: 5px;">Female</label>
+        </div>
+    </td>
+    <td><label for="occupation">Occupation</label></td>
+    <td><input type="text" id="occupation" name="occupation" placeholder="Enter occupation"></td>
+</tr>
+            </table>
+
+            <h3>Identity Details</h3>
+            <table>
+                <tr>
+                    <td><label>ID Type</label></td>
+                    <td><input type="text" placeholder="Enter ID type" required></td>
+                    <td><label>ID Number</label></td>
+                    <td><input type="text" placeholder="Enter ID number" required></td>
+                </tr>
+                <tr>
+                    <td><label>Issue Authority</label></td>
+                    <td><input type="text" placeholder="Enter issue department"></td>
+                    <td><label>Issue Date</label></td>
+                    <td><input type="date" required></td>
+                </tr>
+                <tr>
+                    <td><label>Issue State</label></td>
+                    <td><input type="text" placeholder="Enter ID issue state"></td>
+                    <td><label>Expiry Date</label></td>
+                    <td><input type="date" required></td>
+                </tr>
+            </table>
+
+            <button type="submit" class="next-btn">Next </button>
+        </form>
+    </div>
+</body>
+</html>
